@@ -22,4 +22,4 @@ urlpatterns = [
     path('', include('F1_main_app.urls'), name="F1-main-index"),
 ]
 
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

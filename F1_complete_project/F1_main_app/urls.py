@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('', admin.site.urls),
+    path('', views.index, name="F1-main-index-page"),
 ]
-
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
