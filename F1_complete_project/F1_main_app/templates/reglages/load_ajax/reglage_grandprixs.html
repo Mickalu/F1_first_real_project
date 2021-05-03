@@ -3,5 +3,95 @@
 
 
 {% block content %}
+{% if messages %}
+    {% for message in messages %}
+        {{message}}
+    {% endfor %}
+{% endif %}
 
+<div class="d-flex flex-column-fluid" style="margin-top: 2%;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-custom">
+                    <div class="card-header">
+                        <h3 class="card-title"> Grand Prix</h3>
+                    </div>
+                    <!--begin::Form-->
+                    <div class="card-body">
+                        {% for gp in gps%}
+                        <div class="form-group row">
+                            <div class="col-10 ">
+                                <h2>{{gp.name}}  {{gp.nationality}} </h2>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>     
+            </div>
+            <div class="col-md-6">
+                <div class="card card-custom">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            Add / edit
+                        </h3>
+                    </div>
+                    <!--begin::Form-->
+                    <form>
+                        <div class="card-body">
+                            <form method="POST" id="form_group">
+                                {% csrf_token %}
+                                <div class="form-group row">
+                                    <div class="col-10">
+                                        <input class="form-control" type="text" value="{{name}}" placeholder="name"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-10">
+                                        <input class="form-control" type="text" value="{{nationality}}" placeholder="country"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-10">
+                                        <input class="form-control" type="text" value="{{circuit_lenght}}" placeholder="circuit lenght"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-5">
+                                        <input class="form-control" type="text" value="{{number_of_lap}}" placeholder="number of laps"/>
+                                    </div>
+                                    <div class="col-5">
+                                        <input class="form-control" type="text" value="{{distance}}" placeholder="distance"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-10">
+                                        <input class="form-control" type="text" value="{{lap_record}}" placeholder="lap record"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-color-input" class="col-2 col-form-label">Color</label>
+                                    <div class="col-10">
+                                        <input class="form-control" type="color" value="#563d7c" id="example-color-input"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-2">
+                                </div>
+                                <div class="col-10">
+                                    <button type="submit" name="submit_form" class="btn btn-success mr-2">Submit</button>
+                                    <button type="reset" class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>                   
+            </div>
+            
+        </div>
+    </div>
+</div>
 {% endblock content %}
