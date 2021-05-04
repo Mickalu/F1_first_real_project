@@ -4,18 +4,19 @@
 
 {% block content %}
 {% if messages %}
-    {% for message in messages %}
-        {{message}}
-    {% endfor %}
+{% for message in messages %}
+{{message}}
+{% endfor %}
 {% endif %}
 <div class="subheader py-2 py-lg-12 subheader-transparent" id="kt_subheader">
-    <div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-
+    <div class="container">
+        
         <!--begin::Toolbar-->
-        <div class="d-flex align-items-center">
+        <div class="d-flex" style="display: flex ! important; justify-content: flex-end ! important;">
             <!--begin::Dropdown-->
-            <div class="dropdown dropdown-inline ml-2" style="display: flex ! important; justify-content: flex-end ! important;">
-                <a href="#" class="btn btn-white font-weight-bold py-3 px-6" >Back</a>
+            <div class="dropdown dropdown-inline ml-2">
+                <input type="button" class="btn btn-white font-weight-bold py-3 px-6" value="Back" onclick="history.back()">
+                
             </div>
             <!--end::Dropdown-->
         </div>
@@ -23,7 +24,7 @@
     </div>
 </div>
 
-<div class="d-flex flex-column-fluid" style="margin-top: 2%;">
+<div class="d-flex flex-column-fluid">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -37,7 +38,7 @@
                         {% for driver in drivers%}
                         <div class="form-group row">
                             <div class="col-10 ">
-                                <h2>{{driver.standing}} | {{driver.name}} {{driver.last_name}} </h2>
+                                <h2 style="cursor: pointer;">{{driver.standing}} | {{driver.name}} {{driver.last_name}} </h2>
                             </div>
                         </div>
                         {% endfor %}
@@ -52,76 +53,97 @@
                         </h3>
                     </div>
                     <!--begin::Form-->
-                    <form>
-                        <div class="card-body">
-                            <form method="POST" id="form_group">
-                                {% csrf_token %}
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{name}}" placeholder="name"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{last_name}}" placeholder="Last Name"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{nationality}}" placeholder="country"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{age}}" placeholder="age"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-5">
-                                        <input class="form-control" type="datetime" value="{{date_of_birth}}" placeholder="Birthday"/>
-                                    </div>
-                                    <div class="col-5">
-                                        <input class="form-control" type="text" value="{{number}}" placeholder="number"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{team}}" placeholder="team"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{point}}" placeholder="point"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{standing}}" placeholder="standing"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="example-color-input" class="col-2 col-form-label">Color</label>
-                                    <div class="col-10">
-                                        <input class="form-control" type="color" value="#563d7c" id="example-color-input"/>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="card-footer">
-                            <div class="row">
-                                <div class="col-2">
-                                </div>
+                    
+                    <div class="card-body">
+                        <form method="POST" id="form_group">
+                            {% csrf_token %}
+                            <div class="form-group row">
                                 <div class="col-10">
-                                    <button type="submit" name="submit_form" class="btn btn-success mr-2">Submit</button>
-                                    <button type="reset" class="btn btn-secondary">Cancel</button>
+                                    <input class="form-control" type="text" id="driver_name_form" value="{{name}}" placeholder="name"/>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                            <div class="form-group row">
+                                <div class="col-10">
+                                    <input class="form-control" type="text" id="driver_last_name_form" value="{{last_name}}" placeholder="Last Name"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-10">
+                                    <input class="form-control" type="text" id="driver_nationality_form" value="{{nationality}}" placeholder="country"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-10">
+                                    <input class="form-control" type="text" id="driver_age_form" value="{{age}}" placeholder="age"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-5">
+                                    <input class="form-control" type="datetime" id="driver_date_of_birth_form" value="{{date_of_birth}}" placeholder="Birthday"/>
+                                </div>
+                                <div class="col-5">
+                                    <input class="form-control" type="text" id="driver_number_form" value="{{number}}" placeholder="number"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-10">
+                                    <input class="form-control" type="text" id="driver_team_form" value="{{team}}" placeholder="team"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-10">
+                                    <input class="form-control" type="text" id="driver_point_form" value="{{point}}" placeholder="point"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-10">
+                                    <input class="form-control" type="text" id="driver_standing_form" value="{{standing}}" placeholder="standing"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="example-color-input" class="col-2 col-form-label">Color</label>
+                                <div class="col-8">
+                                    <input class="form-control" type="color" value="#563d7c" id="driver_color_form"/>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-2">
+                                    </div>
+                                    <div class="col-10">
+                                        <button type="submit" name="submit_form" class="btn btn-success mr-2">Submit</button>
+                                        <button type="reset" class="btn btn-secondary">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>   
+                        </form>
+                    </div>
+                   
                 </div>                   
             </div>
             
         </div>
     </div>
 </div>
+
+<script
+src="https://code.jquery.com/jquery-2.2.4.js"
+integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+crossorigin="anonymous"></script>
+
+<script>
+    $(document).on('submit', '#form_group',function(e)
+    {
+        e.preventDefault();
+        console.log('success');
+        driver_name = $("#driver_name_form").val();
+        driver_last_name = $("#driver_last_name_form").val();
+        driver_nationality = $("#driver_nationality_form").val();
+        driver_number = $("#driver_number_form").val();
+        driver_point = $("#driver_point_form").val();
+        driver_standing = $("#driver_standing_form").val();
+        driver_color = $("driver_color_form").val();
+    });
+</script>
 {% endblock content %}
+
