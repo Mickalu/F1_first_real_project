@@ -19,11 +19,9 @@ class Driver(models.Model):
     last_name = models.CharField(max_length=200)
     nationality = models.CharField(max_length=200)
     age = models.PositiveIntegerField()
-    date_of_birth = models.DateField(auto_now=False, auto_now_add=False, blank=True)
+    date_of_birth = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
     number = models.PositiveIntegerField()
     team = models.ForeignKey('team', on_delete = models.PROTECT) # when team is deleted, driver not
-    point = models.PositiveIntegerField()
-    standing = models.PositiveIntegerField()
 
     class Meta:
         verbose_name = "driver"
