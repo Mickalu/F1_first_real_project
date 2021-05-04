@@ -55,55 +55,55 @@
                     <!--begin::Form-->
                     
                     <div class="card-body">
-                        <form method="POST" id="form_group">
+                        <form id="form_group">
                             {% csrf_token %}
                             <div class="form-group row">
                                 <div class="col-10">
-                                    <input class="form-control" type="text" id="driver_name_form" value="{{name}}" placeholder="name"/>
+                                    <input class="form-control" type="text" name="driver_name_form" id="driver_name_form" value="{{name}}" placeholder="name"/>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-10">
-                                    <input class="form-control" type="text" id="driver_last_name_form" value="{{last_name}}" placeholder="Last Name"/>
+                                    <input class="form-control" type="text" name="driver_last_name_form" id="driver_last_name_form" value="{{last_name}}" placeholder="Last Name"/>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-10">
-                                    <input class="form-control" type="text" id="driver_nationality_form" value="{{nationality}}" placeholder="country"/>
+                                    <input class="form-control" type="text" name="driver_nationality_form" id="driver_nationality_form" value="{{nationality}}" placeholder="country"/>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-10">
-                                    <input class="form-control" type="text" id="driver_age_form" value="{{age}}" placeholder="age"/>
+                                    <input class="form-control" type="text" name="driver_age_form"  id="driver_age_form" value="{{age}}" placeholder="age"/>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-5">
-                                    <input class="form-control" type="datetime" id="driver_date_of_birth_form" value="{{date_of_birth}}" placeholder="Birthday"/>
+                                    <input class="form-control" type="datetime" name="driver_date_of_birth_form" id="driver_date_of_birth_form" value="{{date_of_birth}}" placeholder="Birthday"/>
                                 </div>
                                 <div class="col-5">
-                                    <input class="form-control" type="text" id="driver_number_form" value="{{number}}" placeholder="number"/>
+                                    <input class="form-control" type="text" name="driver_number_form" id="driver_number_form" value="{{number}}" placeholder="number"/>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-10">
-                                    <input class="form-control" type="text" id="driver_team_form" value="{{team}}" placeholder="team"/>
+                                    <input class="form-control" type="text" name="driver_team_form" id="driver_team_form" value="{{team}}" placeholder="team"/>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-10">
-                                    <input class="form-control" type="text" id="driver_point_form" value="{{point}}" placeholder="point"/>
+                                    <input class="form-control" type="text" name="driver_point_form" id="driver_point_form"value="{{point}}" placeholder="point"/>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-10">
-                                    <input class="form-control" type="text" id="driver_standing_form" value="{{standing}}" placeholder="standing"/>
+                                    <input class="form-control" type="text" name="driver_standing_form" id="driver_standing_form" value="{{standing}}" placeholder="standing"/>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="example-color-input" class="col-2 col-form-label">Color</label>
                                 <div class="col-8">
-                                    <input class="form-control" type="color" value="#563d7c" id="driver_color_form"/>
+                                    <input class="form-control" type="color" value="#563d7c" name="driver_color_form" id="driver_color_form"/>
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -134,15 +134,34 @@ crossorigin="anonymous"></script>
 <script>
     $(document).on('submit', '#form_group',function(e)
     {
+        var url = '{% url "reglages_drivers" %}';
         e.preventDefault();
-        console.log('success');
-        driver_name = $("#driver_name_form").val();
-        driver_last_name = $("#driver_last_name_form").val();
-        driver_nationality = $("#driver_nationality_form").val();
-        driver_number = $("#driver_number_form").val();
-        driver_point = $("#driver_point_form").val();
-        driver_standing = $("#driver_standing_form").val();
-        driver_color = $("driver_color_form").val();
+        // var driver_name = $("#driver_name_form").val();
+        // var driver_last_name = $("#driver_last_name_form").val();
+        // var driver_nationality = $("#driver_nationality_form").val();
+        // var driver_number = $("#driver_number_form").val();
+        // var driver_point = $("#driver_point_form").val();
+        // var driver_standing = $("#driver_standing_form").val();
+        // var driver_color = $("#driver_color_form").val();
+
+        var form_data = new FormData($('#form_group').get(0));
+        form_data.append('action', 'add_driver');
+        $.ajax({
+        headers : {"X-CSRFToken" : '{{csrf_token}}' },
+        url : url, 
+        type:'POST',
+        contentType : false,
+        processData : false,
+        data : form_data, 
+        
+        success : function(json) {
+            console.log("success");
+        },
+
+        error : function(xhr,errmsg,err) {
+  
+        }
+    });
     });
 </script>
 {% endblock content %}
