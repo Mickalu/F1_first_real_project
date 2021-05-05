@@ -37,9 +37,9 @@
                     <div class="card-body">
                         {% csrf_token %}
                         {% for driver in drivers%}
-                        <div class="form-group row">
+                        <div class="form-group row" style="width: 130%;">
                             <div class="col-10" style="display: flex; justify-content: space-between;">
-                                <h2 style="cursor: pointer;" ondblclick="show_data_driver(`{{driver.id}}`, `{% url 'reglages_drivers'%}`)" id='{{driver.id}}'>{{driver.number}} | {{driver.name}} {{driver.last_name}} </h2>
+                                <h2 style="cursor: pointer;" onclick="show_data_driver(`{{driver.id}}`, `{% url 'reglages_drivers'%}`)" id='{{driver.id}}'>{{driver.number}} | {{driver.name}} {{driver.last_name}} </h2>
                                 <button class="btn" class="delete_driver_buttton" onclick="delete_driver(`{{driver.id}}`, `{% url 'reglages_drivers'%}`)" id='{{driver.id}}'>
                                     <span class="svg-icon svg-icon-xl svg-icon-danger">
                                         <!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-03-183419/theme/html/demo2/dist/../src/media/svg/icons/Home/Trash.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -116,7 +116,7 @@
                                     <div class="col-2">
                                     </div>
                                     <div class="col-10">
-                                        <button type="submit" name="submit_form" id="submit_form_driver" class="btn btn-success mr-2">Submit</button>
+                                        <button type="submit" name="submit_form" id="submit_form_driver" class="btn mr-2" style="background-color: #F11E25; opacity: 0.85;">Submit</button>
                                         <button type="reset" class="btn btn-secondary">Cancel</button>
                                     </div>
                                 </div>
@@ -230,8 +230,13 @@ crossorigin="anonymous"></script>
         });
     }
 
-    $('#submit_form_driver').mousedown(function(event){
-
+    $('#submit_form_driver').mouseenter(function(event){
+        $(this).css('background-color', '#F22E52')
+        $(this).css('opacity', '0.8')
+    });
+    $('#submit_form_driver').mouseleave(function(event){
+        $(this).css('background-color', '#F11E25')
+        $(this).css('opacity', '0.80')
     });
 
 
