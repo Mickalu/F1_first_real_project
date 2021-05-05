@@ -7,7 +7,7 @@ def reglages(request):
         return render(request, 'reglages/reglage.html')
 
 def reglages_drivers(request):
-        print(request.POST.get('action'))
+        print(request.POST)
         
         if request.POST.get('action') == 'add_driver':
                 return add_driver(request)
@@ -17,6 +17,10 @@ def reglages_drivers(request):
 
         if request.POST.get('action') == 'show_data_driver':
                 return show_data_driver(request)
+
+        if request.POST.get('action') == 'update_driver':
+                return update_driver(request)
+        
 
         drivers = Driver.objects.all()
         teams = Team.objects.all()
@@ -35,6 +39,7 @@ def show_data_driver(request):
         response_data['driver_date_of_birth'] = mon_driver.date_of_birth
         response_data['driver_number'] = mon_driver.number
         response_data['driver_team'] = mon_driver.team.id
+        response_data['driver_id'] = id_driver
 
         return JsonResponse(response_data)
 
@@ -46,6 +51,31 @@ def delete_driver(request):
         mon_driver.delete()
 
         response_data['success'] = "it's removed"
+        return JsonResponse(response_data)
+
+def update_driver(request):
+        response_data = {}
+
+        name = request.POST.get('driver_name'),
+        nationality= request.POST.get('driver_nationality'),
+        last_name = request.POST.get('driver_last_name'),
+        age = request.POST.get('driver_age'),
+        date_of_birth = request.POST.get('driver_date_of_birth'),
+        number = request.POST.get('driver_number'),
+        team_id = request.POST.get('driver_team'),
+        driver_id = request.POST.get('driver_id')[0]
+ 
+        Driver.objects.filter(pk=driver_id[0]).update(
+                name = name[0],
+                nationality = nationality[0],
+                last_name = last_name[0],
+                age = int(age[0]),
+                date_of_birth = date_of_birth[0],
+                number = int(number[0]),
+                team = int(team_id[0]),
+        )
+
+        response_data['success'] = "it's updated"
         return JsonResponse(response_data)
 
 def add_driver(request):

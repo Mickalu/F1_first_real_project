@@ -69,6 +69,7 @@
                     <div class="card-body">
                         <form id="form_group">
                             {% csrf_token %}
+                            <input type="hidden" id="driver_id_form">
                             <div class="form-group row">
                                 <div class="col-10">
                                     <input class="form-control" type="text" name="driver_name_form" id="driver_name_form" value="{{name}}" placeholder="name"/>
@@ -96,34 +97,35 @@
                                 <div class="col-5">
                                     <input class="form-control" type="number" name="driver_number_form" id="driver_number_form" value="{{number}}" placeholder="number"/>
                                 </div>
+                                <div class="col-5">
+                                    <p class="form-control" type="number" name="driver_number_form" id="driver_id" value=""  style="visibility: hidden;"></p>
+                                </div>
                             </div>
                             <div class="form-group row">
                                 
-                                <!-- <input class="form-control" type="text" name="driver_team_form" id="driver_team_form" value="{{team}}" placeholder="team"/> -->
                                 <div class=" col-10 form-group">
                                     <label>Team</label>
-                                    <select class="form-control form-control-solid" name="driver_team_form">
+                                    <select class="form-control form-control-solid" id="driver_team_form" name="driver_team_form">
                                         {% for team in teams %}
                                         <option  value='{{team.id}}'>{{team.name}}</option>
                                         {% endfor %}
                                     </select>
                                     
                                 </div>
-                                
                             </div>
                             <div class="card-footer">
                                 <div class="row">
                                     <div class="col-2">
                                     </div>
                                     <div class="col-10">
-                                        <button type="submit" name="submit_form" id="submit_form_driver" class="btn mr-2" style="background-color: #F11E25; opacity: 0.85;">Submit</button>
+                                        <button type="submit" name="submit_form" id="submit_form_driver" class="btn mr-2" style="background-color: #F11E25; opacity: 0.85; ">Submit</button>
+                                        <button type="button" name="modify_form_driver" id="modify_form_driver" class="btn mr-2" style="background-color: #2EF2F2; opacity: 0.85; ">Modify</button>
                                         <button type="reset" class="btn btn-secondary">Cancel</button>
                                     </div>
                                 </div>
                             </div>   
                         </form>
                     </div>
-                    
                 </div>                   
             </div>
             
@@ -132,9 +134,10 @@
 </div>
 
 <script
-src="https://code.jquery.com/jquery-2.2.4.js"
-integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
-crossorigin="anonymous"></script>
+    src="https://code.jquery.com/jquery-2.2.4.js"
+    integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+    crossorigin="anonymous">
+</script>
 
 <script>
     $(document).on('submit', '#form_group',function(e)
@@ -164,6 +167,45 @@ crossorigin="anonymous"></script>
         });
     });
 
+    $(document).ready(function()
+    {
+        $('#modify_form_driver').click(function()
+        {
+            var url = '{% url "reglages_drivers" %}';
+            var driver_name = $("#driver_name_form").val(),
+                driver_last_name = $("#driver_last_name_form").val(),
+                driver_nationality = $("#driver_nationality_form").val(),
+                driver_age = $("#driver_age_form").val(),
+                driver_date_of_birth = $("#driver_date_of_birth_form").val(),
+                driver_number = $("#driver_number_form").val(),
+                driver_id = $("#driver_id_form").val(),
+                driver_team = $("#driver_team_form").val();
+
+            $.ajax({
+                headers : {"X-CSRFToken" : '{{csrf_token}}' }, 
+                url : url, 
+                method :'POST',
+                data: {
+                    'action':'update_driver',
+                    'driver_name':driver_name, 
+                    'driver_last_name':driver_last_name, 
+                    'driver_nationality':driver_nationality,
+                    'driver_age':driver_age,
+                    'driver_date_of_birth':driver_date_of_birth,
+                    'driver_number':driver_number,
+                    'driver_team':driver_team,
+                    'driver_id':driver_id,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(json){
+                    $("#form_group")[0].reset();
+                    $("#my_drivers").load(" #my_drivers");
+                }
+            });
+        });
+    });
+
+
     function delete_driver(id_driver, url){
         console.log(id_driver);
         Swal.fire({
@@ -176,7 +218,6 @@ crossorigin="anonymous"></script>
             reverseButtons: true
         }).then(function(result) {
             if (result.value) {
-                console.log(url);
 
                 $.ajax({
                     url: url,
@@ -207,9 +248,10 @@ crossorigin="anonymous"></script>
         });
     }
 
-    function show_data_driver(id_driver, url){
-        console.log(id_driver);
-        $.ajax({
+    function show_data_driver(id_driver, url)
+    {
+        $.ajax(
+        {
             url: url,
             method:'POST',
             data:{
@@ -217,27 +259,42 @@ crossorigin="anonymous"></script>
                 'action' : 'show_data_driver',
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
             },
-            success : function(json) {
-                console.log(json);
-                $("#driver_name_form")[0].value = json.driver_name;
-                $("#driver_last_name_form")[0].value = json.driver_last_name;
-                $("#driver_nationality_form")[0].value = json.driver_nationality;
-                $("#driver_age_form")[0].value = json.driver_age;
-                $("#driver_date_of_birth_form")[0].value = json.driver_date_of_birth;
-                $("#driver_number_form")[0].value = json.driver_number;
-                $("#driver_team_form")[0].value = json.driver_team;
-            },
+            success : function(json) 
+            {
+                $("#driver_name_form").val(json.driver_name);
+                $("#driver_last_name_form").val(json.driver_last_name);
+                $("#driver_nationality_form").val(json.driver_nationality);
+                $("#driver_age_form").val(json.driver_age);
+                $("#driver_date_of_birth_form").val(json.driver_date_of_birth);
+                $("#driver_number_form").val(json.driver_number);
+                $("#driver_id_form").val(json.driver_id);
+                $("#driver_team_form").val(json.driver_team);
+
+                $("#modify_form_driver").css('display', 'block');
+                $("#submit_form_driver").css('display', 'none');
+                console.log(json.driver_id);
+            }
         });
     }
 
-    $('#submit_form_driver').mouseenter(function(event){
+    $('#submit_form_driver').mouseenter(function(event)
+    {
         $(this).css('background-color', '#F22E52')
         $(this).css('opacity', '0.8')
     });
-    $('#submit_form_driver').mouseleave(function(event){
+    $('#submit_form_driver').mouseleave(function(event)
+    {
         $(this).css('background-color', '#F11E25')
         $(this).css('opacity', '0.80')
     });
+
+    $('#modify_form_driver').mouseenter(function(event){
+        $(this).css('opacity', '0.70')
+    });
+    $('#modify_form_driver').mouseleave(function(event){
+        $(this).css('opacity', '0.85')
+    });
+
 
 
 </script>
