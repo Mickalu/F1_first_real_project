@@ -35,7 +35,6 @@
                     </div>
                     <!--begin::Form-->
                     <div class="card-body">
-                        {% csrf_token %}
                         {% for driver in drivers%}
                         <div class="form-group row" style="width: 130%;">
                             <div class="col-10" style="display: flex; justify-content: space-between;">
@@ -200,6 +199,9 @@
                 success: function(json){
                     $("#form_group")[0].reset();
                     $("#my_drivers").load(" #my_drivers");
+
+                    $("#modify_form_driver").css('display', 'none');
+                    $("#submit_form_driver").css('display', 'block');
                 }
             });
         });

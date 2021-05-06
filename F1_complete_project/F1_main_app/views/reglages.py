@@ -46,9 +46,9 @@ def show_data_driver(request):
 def delete_driver(request):
         response_data = {}
         id_driver = request.POST.get('id_driver')
-        mon_driver = Driver.objects.get(id = int(id_driver))
+        my_driver = Driver.objects.get(id = int(id_driver))
     
-        mon_driver.delete()
+        my_driver.delete()
 
         response_data['success'] = "it's removed"
         return JsonResponse(response_data)
@@ -104,9 +104,85 @@ def add_driver(request):
 
 
 
+
+
+
+
 def reglages_teams(request):
-        context = {'teams': Team.objects.all()}
+        print(request.POST.get('action'))
+        if request.POST.get('action') == 'add_team':
+                return add_team(request)
+
+        if request.POST.get('action') == 'delete_team':
+                return delete_team(request)
+
+        if request.POST.get('action') == 'show_data_team':
+                return show_data_team(request)
+
+        if request.POST.get('action') == 'update_team':
+                return update_team(request)
+        
+        teams = Team.objects.all()
+        context = locals()
         return render(request, 'reglages/load_ajax/reglage_teams.html', context)
+
+def add_team(request):
+        response_data = {}
+
+        name = request.POST.get('team_name_form')
+        nationality= request.POST.get('team_nationality_form')
+        color = request.POST.get('team_color_form')
+        # logo = request.POST.get('team_logo_form')
+
+        Team.objects.create(
+                name = name,
+                nationality = nationality,
+                color = color,
+                # logo = logo,
+        )
+        response_data['success'] = 'ça passe'
+        return JsonResponse(response_data)
+
+def delete_team(request):
+        response_data = {}
+        team_delete = Team.objects.get(id = request.POST.get('id_team'))
+        team_delete.delete()
+
+        response_data["success"] = 'Team deleted'
+        return JsonResponse(response_data)
+
+def show_data_team(request):
+        response_data = {}
+        team_id = request.POST.get("id_team")
+        team_show_data = Team.objects.get(id = team_id)
+
+        response_data["team_name"] = team_show_data.name
+        response_data["team_nationality"] = team_show_data.nationality
+        response_data["team_color"] = team_show_data.color
+        response_data["team_id"] = team_id
+        # response_data["team_logo"] = team_show_data.logo.url
+
+
+        return JsonResponse(response_data)
+
+def update_team(request):
+        response_data = {}
+
+        team_id = request.POST.get("team_id")
+        team_name = request.POST.get("team_name")
+        team_nationality = request.POST.get("team_nationality")
+        team_color = request.POST.get("team_color")
+        # team_logo = request.POST.get("team_logo")
+
+        Team.objects.filter(pk=team_id).update(
+                name = team_name,
+                nationality = team_nationality,
+                color = team_color,
+                # logo = team_logo,
+        )
+
+        response_data["success"] = "team updated"
+        return JsonResponse(response_data)
 
 def reglages_grandprixs(request):
         context = {'gps': Grand_Prix.objects.all()}

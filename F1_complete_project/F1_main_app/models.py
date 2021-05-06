@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 class Team(models.Model):
     name = models.CharField(max_length=200)
     nationality = models.CharField(max_length=200)
-    point = models.PositiveIntegerField()
-    standing = models.PositiveIntegerField()
+    color = models.CharField( default="#000000", max_length=200, blank=True, null=True)
+    logo = models.ImageField(default='default.jpg', upload_to = 'teams', blank=True, null=True)
 
     class Meta:
         verbose_name = "team"

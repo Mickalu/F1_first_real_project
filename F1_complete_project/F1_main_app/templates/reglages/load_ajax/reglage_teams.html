@@ -28,16 +28,29 @@
     <div class="container">
         <div class="row">
             <div class="col-md-6">
-                <div class="card card-custom">
+                <div class="card card-custom" id="my_teams">
                     <div class="card-header">
                         <h3 class="card-title">Teams</h3>
                     </div>
                     <!--begin::Form-->
                     <div class="card-body">
                         {% for team in teams%}
-                        <div class="form-group row">
-                            <div class="col-10 ">
-                                <h2>{{team.name}}  {{team.nationality}} </h2>
+                        <div class="form-group row" style="width: 130%;">
+                            <div class="col-10" style="display: flex; justify-content: space-between;">
+                                
+                                <h2 style="cursor: pointer;" onclick="show_data_team(`{{team.id}}`, `{% url 'reglages_teams'%}`)" id='{{team.id}}'>{{team.nationality}} | {{team.name}}</h2>
+                                <button class="btn" class="delete_team_buttton" onclick="delete_team(`{{team.id}}`, `{% url 'reglages_teams'%}`)" id='{{team.id}}'>
+                                    <span class="svg-icon svg-icon-xl svg-icon-danger">
+                                        <!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-03-183419/theme/html/demo2/dist/../src/media/svg/icons/Home/Trash.svg-->
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                <rect x="0" y="0" width="24" height="24"/>
+                                                <path d="M6,8 L18,8 L17.106535,19.6150447 C17.04642,20.3965405 16.3947578,21 15.6109533,21 L8.38904671,21 C7.60524225,21 6.95358004,20.3965405 6.89346498,19.6150447 L6,8 Z M8,10 L8.45438229,14.0894406 L15.5517885,14.0339036 L16,10 L8,10 Z" fill="#000000" fill-rule="nonzero"/>
+                                                <path d="M14,4.5 L14,3.5 C14,3.22385763 13.7761424,3 13.5,3 L10.5,3 C10.2238576,3 10,3.22385763 10,3.5 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3"/>
+                                            </g>
+                                        </svg><!--end::Svg Icon-->
+                                    </span>
+                                </button>
                             </div>
                         </div>
                         {% endfor %}
@@ -52,39 +65,37 @@
                         </h3>
                     </div>
                     <!--begin::Form-->
-                    <form>
+                    <form id="form_group_team">
+                        {% csrf_token %}
+                        <input type="hidden" id="team_id_form">
                         <div class="card-body">
-                            <form method="POST" id="form_group">
-                                {% csrf_token %}
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{name}}" placeholder="name"/>
-                                    </div>
+                            <div class="form-group row">
+                                <div class="col-10">
+                                    <input class="form-control" type="text" name="team_name_form" id="team_name_form" placeholder="name"/>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{nationality}}" placeholder="country"/>
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-10">
+                                    <input class="form-control" type="text" name="team_nationality_form" id="team_nationality_form" placeholder="country"/>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{point}}" placeholder="point"/>
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="team_color_form" class="col-2 col-form-label">Color</label>
+                                <div class="col-8">
+                                 <input class="form-control" type="color" value="#563d7c" name="team_color_form" id="team_color_form"/>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{standing}}" placeholder="standing"/>
-                                    </div>
-                                </div>
-                            </form>
+                            </div>
+
                         </div>
+                        
                         <div class="card-footer">
                             <div class="row">
                                 <div class="col-2">
                                 </div>
-                                <div class="col-10">
-                                    <button type="submit" name="submit_form" class="btn btn-success mr-2">Submit</button>
-                                    <button type="reset" class="btn btn-secondary">Cancel</button>
+                                <div class="col-10 d-flex align-items-center">
+                                    <button type="submit" name="submit_form" id="submit_form_team" class="btn mr-2" style="background-color: #F11E25; opacity: 0.85; ">Submit</button>
+                                    <button type="button" name="modify_form_team" id="modify_form_team" class="btn mr-2" style="background-color: #2EF2F2; opacity: 0.85; display: none;">Modify</button>
+                                    <button type="reset" class="btn btn-secondary" id="cancel_form_team">Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -95,4 +106,165 @@
         </div>
     </div>
 </div>
+
+<script
+    src="https://code.jquery.com/jquery-2.2.4.js"
+    integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+    crossorigin="anonymous">
+</script>
+<script>
+    $(document).on('submit', '#form_group_team',function(e)
+    {
+        var url = '{% url "reglages_teams" %}';
+        e.preventDefault();
+        
+        var form_data = new FormData($('#form_group_team').get(0));
+        form_data.append('action', 'add_team');
+        $.ajax({
+            headers : {"X-CSRFToken" : '{{csrf_token}}' }, 
+            url : url, 
+            method :'POST',
+            contentType : false,
+            processData : false,
+            data : form_data, 
+            
+            success : function(json) {
+                console.log(json.success);
+                $("#form_group_team")[0].reset();
+                $("#my_teams").load(" #my_teams");
+            },
+            
+            error : function(xhr,errmsg,err) {
+                
+            }
+        });
+    });
+
+    function delete_team(id_team, url)
+    {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete Driver!",
+            cancelButtonText: "No, cancel!",
+            reverseButtons: true
+        }).then(function(result){
+            if (result.value){
+                $.ajax({
+                    url:url,
+                    method:'POST',
+                    headers : {"X-CSRFToken" : '{{csrf_token}}'},
+                    data:{
+                        'id_team': id_team,
+                        'action': 'delete_team',
+                    },
+                    success : function(json) {
+                        console.log(json.success);
+                        $("#my_teams").load(" #my_teams");
+                        $("#form_group_team")[0].reset();
+                        Swal.fire(
+                            "Deleted!",
+                            "Your file has been deleted.",
+                            "success"
+                        );
+                    },
+                });
+            }
+            else if (result.dismiss === "cancel") {
+                Swal.fire(
+                    "Cancelled",
+                    "Your imaginary file is safe :)",
+                    "error"
+                )
+            }
+        });
+    };
+
+    function show_data_team(id_team, url)
+    {
+        $.ajax({
+            url:url,
+            method:'POST',
+            headers : {"X-CSRFToken" : '{{csrf_token}}' },
+            data:{
+                'action':'show_data_team',
+                'id_team':id_team
+            },
+            success: function(json){
+                $("#team_name_form").val(json.team_name);
+                $("#team_nationality_form").val(json.team_nationality);
+                $("#team_id_form").val(json.team_id);
+                $("#team_color_form").val(json.team_color.url);
+
+                $("#modify_form_team").css('display', 'block');
+                $("#submit_form_team").css('display', 'none');
+            }
+        });
+    };
+
+    $(document).ready(function(){
+        $("#modify_form_team").click(function(){
+            var url = '{% url "reglages_teams" %}';
+            var team_name = $("#team_name_form").val(),
+                team_nationality = $("#team_nationality_form").val();
+                team_color = $("#team_color_form").val();
+                team_id = $("#team_id_form").val();
+                // team_logo = $("#team_logo_form").val();
+
+            $.ajax({
+                headers : {"X-CSRFToken" : '{{csrf_token}}' }, 
+                url:url,
+                method:'POST',
+                data:{
+                    'action' : 'update_team',
+                    'team_name' : team_name,
+                    'team_nationality' : team_nationality,
+                    'team_color': team_color,
+                    'team_id': team_id,
+                    // 'team_logo': team_logo
+                },
+                success : function(json){
+                    $("#form_group_team")[0].reset();
+                    $("#my_teams").load(" #my_teams");
+
+                    $("#modify_form_driver").css('display', 'none');
+                    $("#submit_form_driver").css('display', 'block');
+                }
+            });
+        });
+    });
+
+
+
+
+
+
+    $('#submit_form_team').mouseenter(function(event)
+    {
+        $(this).css('background-color', '#F22E52');
+        $(this).css('opacity', '0.8');
+    });
+    $('#submit_form_team').mouseleave(function(event)
+    {
+        $(this).css('background-color', '#F11E25');
+        $(this).css('opacity', '0.80');
+    });
+
+    $('#modify_form_team').mouseenter(function(event){
+        $(this).css('opacity', '0.70');
+    });
+    $('#modify_form_team').mouseleave(function(event){
+        $(this).css('opacity', '0.85');
+    });
+
+    $('#cancel_form_team').click(function(){
+        $("#form_group_team")[0].reset();
+        $("#my_teams").load(" #my_teams");
+
+        $("#modify_form_team").css('display', 'none');
+        $("#submit_form_team").css('display', 'block');
+    });
+</script>
 {% endblock content %}
