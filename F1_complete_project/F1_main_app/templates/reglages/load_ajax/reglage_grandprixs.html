@@ -4,13 +4,13 @@
 
 {% block content %}
 {% if messages %}
-    {% for message in messages %}
-        {{message}}
-    {% endfor %}
+{% for message in messages %}
+{{message}}
+{% endfor %}
 {% endif %}
 <div class="subheader py-2 py-lg-12 subheader-transparent" id="kt_subheader">
     <div class="container">
-
+        
         <!--begin::Toolbar-->
         <div class="d-flex" style="display: flex ! important; justify-content: flex-end ! important;">
             <!--begin::Dropdown-->
@@ -28,16 +28,28 @@
     <div class="container">
         <div class="row">
             <div class="col-md-6">
-                <div class="card card-custom">
+                <div class="card card-custom" id="my_gps">
                     <div class="card-header">
                         <h3 class="card-title"> Grand Prix</h3>
                     </div>
                     <!--begin::Form-->
                     <div class="card-body">
                         {% for gp in gps%}
-                        <div class="form-group row">
-                            <div class="col-10 ">
-                                <h2>{{gp.name}}  {{gp.nationality}} </h2>
+                        <div class="form-group row" style="width: 130%;">
+                            <div class="col-10" style="display: flex; justify-content: space-between;">
+                                <h2 style="cursor: pointer;" onclick="show_data_gp(`{{gp.id}}`, `{% url 'reglages_grandprixs'%}`)" id='{{gp.id}}'>{{gp.nationality}} | {{gp.name}}</h2>
+                                <button class="btn" class="delete_gp_buttton" onclick="delete_gp(`{{gp.id}}`, `{% url 'reglages_grandprixs'%}`)" id='{{gp.id}}'>
+                                    <span class="svg-icon svg-icon-xl svg-icon-danger">
+                                        <!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-03-183419/theme/html/demo2/dist/../src/media/svg/icons/Home/Trash.svg-->
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                <rect x="0" y="0" width="24" height="24"/>
+                                                <path d="M6,8 L18,8 L17.106535,19.6150447 C17.04642,20.3965405 16.3947578,21 15.6109533,21 L8.38904671,21 C7.60524225,21 6.95358004,20.3965405 6.89346498,19.6150447 L6,8 Z M8,10 L8.45438229,14.0894406 L15.5517885,14.0339036 L16,10 L8,10 Z" fill="#000000" fill-rule="nonzero"/>
+                                                <path d="M14,4.5 L14,3.5 C14,3.22385763 13.7761424,3 13.5,3 L10.5,3 C10.2238576,3 10,3.22385763 10,3.5 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3"/>
+                                            </g>
+                                        </svg><!--end::Svg Icon-->
+                                    </span>
+                                </button>
                             </div>
                         </div>
                         {% endfor %}
@@ -52,61 +64,247 @@
                         </h3>
                     </div>
                     <!--begin::Form-->
-                    <form>
-                        <div class="card-body">
-                            <form method="POST" id="form_group">
-                                {% csrf_token %}
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{name}}" placeholder="name"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{nationality}}" placeholder="country"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{circuit_lenght}}" placeholder="circuit lenght"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-5">
-                                        <input class="form-control" type="text" value="{{number_of_lap}}" placeholder="number of laps"/>
-                                    </div>
-                                    <div class="col-5">
-                                        <input class="form-control" type="text" value="{{distance}}" placeholder="distance"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" value="{{lap_record}}" placeholder="lap record"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="example-color-input" class="col-2 col-form-label">Color</label>
-                                    <div class="col-10">
-                                        <input class="form-control" type="color" value="#563d7c" id="example-color-input"/>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="card-footer">
-                            <div class="row">
-                                <div class="col-2">
-                                </div>
+                    
+                    <div class="card-body">
+                        <form id="form_group_gp" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" id="gp_id_form">
+                            <div class="form-group row">
                                 <div class="col-10">
-                                    <button type="submit" name="submit_form" class="btn btn-success mr-2">Submit</button>
-                                    <button type="reset" class="btn btn-secondary">Cancel</button>
+                                    <input class="form-control" type="text" name="gp_name_form" id="gp_name_form" placeholder="name"/>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                            <div class="form-group row">
+                                <div class="col-10">
+                                    <input class="form-control" type="text" name="gp_nationality_form" id="gp_nationality_form" placeholder="country"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-10">
+                                    <input class="form-control" type="text" name="gp_circuit_lenght_form" id="gp_circuit_lenght_form" placeholder="circuit lenght"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-5">
+                                    <input class="form-control" type="text" name="gp_number_of_lap_form" id="gp_number_of_lap_form" placeholder="number of laps"/>
+                                </div>
+                                <div class="col-5">
+                                    <input class="form-control" type="text" name="gp_distance_form" id="gp_distance_form" placeholder="distance"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-10">
+                                    <input class="form-control" type="text" name="gp_lap_record_form" id="gp_lap_record_form" placeholder="minute:seconde"/>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-2">
+                                    </div>
+                                    <div class="col-10 d-flex align-items-center">
+                                        <button type="submit" name="submit_form_gp" id="submit_form_gp" class="btn mr-2" style="background-color: #F11E25; opacity: 0.85; ">Submit</button>
+                                        <button type="button" name="modify_form_gp" id="modify_form_gp" class="btn mr-2" style="background-color: #2EF2F2; opacity: 0.85; display: none;">Modify</button>
+                                        <button type="reset" class="btn btn-secondary" id="cancel_form_gp">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
                 </div>                   
             </div>
             
         </div>
     </div>
 </div>
+<script
+src="https://code.jquery.com/jquery-2.2.4.js"
+integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+crossorigin="anonymous">
+</script>
+<script>
+    $(document).on('submit', '#form_group_gp',function(e)
+    {
+        var url = '{% url "reglages_grandprixs" %}';
+        e.preventDefault();
+        
+        var from_data = new FormData($('#form_group_gp').get(0));
+        from_data.append('action', 'add_gp');
+        
+        $.ajax({
+            headers : {"X-CSRFToken" : '{{csrf_token}}' }, 
+            url : url, 
+            method :'POST',
+            contentType : false,
+            processData : false,
+            data : from_data, 
+            
+            success:function(json){
+                console.log(json.success);
+                $("#form_group_gp")[0].reset();
+                $("#my_gps").load(" #my_gps");
+                
+                toast_page("Grand prix added");
+            },
+            error : function(xhr,errmsg,err) {
+                
+            }
+        });
+    });
+    
+    function show_data_gp(id_gp, url)
+    {
+        $.ajax({
+            url:url,
+            method:'POST',
+            data:{
+                'gp_id' : id_gp,
+                'action' : 'show_data_gp',
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(json)
+            {
+                $("#gp_name_form").val(json.name);
+                $("#gp_nationality_form").val(json.nationality);
+                $("#gp_circuit_lenght_form").val(json.circuit_lenght);
+                $("#gp_number_of_lap_form").val(json.number_of_lap);
+                $("#gp_distance_form").val(json.distance);
+                $("#gp_lap_record_form").val(json.lap_record);
+                
+                $("#gp_id_form").val(json.gp_id);
+                
+                $("#modify_form_gp").css('display', 'block');
+                $("#submit_form_gp").css('display', 'none');
+            }
+        });
+    };
+    
+    $(document).ready(function(){
+        $("#modify_form_gp").click(function(){
+            var url = '{% url "reglages_grandprixs" %}';
+            var name = $("#gp_name_form").val();
+            var nationality = $("#gp_nationality_form").val();
+            var circuit_lenght = $("#gp_circuit_lenght_form").val();
+            var number_of_lap= $("#gp_number_of_lap_form").val();
+            var distance = $("#gp_distance_form").val();
+            var lap_record = $("#gp_lap_record_form").val();
+            var gp_id = $("#gp_id_form").val();
+            
+            $.ajax({
+                headers : {"X-CSRFToken" : '{{csrf_token}}' }, 
+                url:url,
+                method:'POST',
+                data:{
+                    'action' : 'update_gp',
+                    'gp_name' : name,
+                    'gp_nationality' : nationality,
+                    'gp_circuit_lenght' : circuit_lenght,
+                    'gp_number_of_lap' : number_of_lap,
+                    'gp_distance' : distance,
+                    'gp_lap_record' : lap_record,
+                    'gp_id' : gp_id,
+                },
+                success: function(json)
+                {
+                    $("#form_group_gp")[0].reset();
+                    $("#my_gps").load(" #my_gps");
+                    
+                    $("#modify_form_gp").css('display', 'none');
+                    $("#submit_form_gp").css('display', 'block');
+                    
+                    toast_page("Grand prix updated");
+                }
+            });
+            
+        });
+    });
+    
+    function delete_gp(id_gp, url)
+    {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete Driver!",
+            cancelButtonText: "No, cancel!",
+            reverseButtons: true
+        }).then(function(result){
+            if (result.value){
+                $.ajax({
+                    url:url,
+                    method:'POST',
+                    headers : {"X-CSRFToken" : '{{csrf_token}}'},
+                    data:{
+                        'gp_id': id_gp,
+                        'action': 'delete_gp',
+                    },
+                    success : function(json) {
+                        console.log(json.success);
+                        $("#my_gps").load(" #my_gps");
+                        $("#form_group_gp")[0].reset();
+                        Swal.fire(
+                        "Deleted!",
+                        "Your file has been deleted.",
+                        "success"
+                        );
+                        
+                    },
+                });
+            }
+            else if (result.dismiss === "cancel") {
+                Swal.fire(
+                "Cancelled",
+                "Your imaginary file is safe :)",
+                "error"
+                )
+            }
+        });
+    };
+    
+    
+    function toast_page(message)
+    {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            onOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+        Toast.fire({
+            type: 'success',
+            title: message
+        })
+    }
+    
+    $('#submit_form_gp').mouseenter(function(event)
+    {
+        $(this).css('background-color', '#F22E52');
+        $(this).css('opacity', '0.8');
+    });
+    $('#submit_form_gp').mouseleave(function(event)
+    {
+        $(this).css('background-color', '#F11E25');
+        $(this).css('opacity', '0.80');
+    });
+    
+    $('#modify_form_gp').mouseenter(function(event){
+        $(this).css('opacity', '0.70');
+    });
+    $('#modify_form_gp').mouseleave(function(event){
+        $(this).css('opacity', '0.85');
+    });
+    
+    $('#cancel_form_gp').click(function(){
+        $("#form_group_gp")[0].reset();
+        $("#my_gps").load(" #my_gps");
+        
+        $("#modify_form_gp").css('display', 'none');
+        $("#submit_form_gp").css('display', 'block');
+    });
+</script>
 {% endblock content %}

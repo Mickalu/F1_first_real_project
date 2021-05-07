@@ -4,13 +4,13 @@
 
 {% block content %}
 {% if messages %}
-    {% for message in messages %}
-        {{message}}
-    {% endfor %}
+{% for message in messages %}
+{{message}}
+{% endfor %}
 {% endif %}
 <div class="subheader py-2 py-lg-12 subheader-transparent" id="kt_subheader">
     <div class="container">
-
+        
         <!--begin::Toolbar-->
         <div class="d-flex" style="display: flex ! important; justify-content: flex-end ! important;">
             <!--begin::Dropdown-->
@@ -37,8 +37,12 @@
                         {% for team in teams%}
                         <div class="form-group row" style="width: 130%;">
                             <div class="col-10" style="display: flex; justify-content: space-between;">
-                                
-                                <h2 style="cursor: pointer;" onclick="show_data_team(`{{team.id}}`, `{% url 'reglages_teams'%}`)" id='{{team.id}}'>{{team.nationality}} | {{team.name}}</h2>
+                                <div style="display: flex; justify-content: flex-start;">
+                                    {% if team.logo %}
+                                    <img src="{{team.logo.url}}" style="width: 50px; height: 50px;">
+                                    {% endif %}
+                                    <h2 style="cursor: pointer;" onclick="show_data_team(`{{team.id}}`, `{% url 'reglages_teams'%}`)" id='{{team.id}}'>{{team.nationality}} | {{team.name}}</h2>
+                                </div>
                                 <button class="btn" class="delete_team_buttton" onclick="delete_team(`{{team.id}}`, `{% url 'reglages_teams'%}`)" id='{{team.id}}'>
                                     <span class="svg-icon svg-icon-xl svg-icon-danger">
                                         <!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-03-183419/theme/html/demo2/dist/../src/media/svg/icons/Home/Trash.svg-->
@@ -65,7 +69,7 @@
                         </h3>
                     </div>
                     <!--begin::Form-->
-                    <form id="form_group_team">
+                    <form id="form_group_team" enctype="multipart/form-data">
                         {% csrf_token %}
                         <input type="hidden" id="team_id_form">
                         <div class="card-body">
@@ -82,10 +86,16 @@
                             <div class="form-group row">
                                 <label for="team_color_form" class="col-2 col-form-label">Color</label>
                                 <div class="col-8">
-                                 <input class="form-control" type="color" value="#563d7c" name="team_color_form" id="team_color_form"/>
+                                    <input class="form-control" type="color" value="#563d7c" name="team_color_form" id="team_color_form"/>
                                 </div>
                             </div>
-
+                            <div class="form-group row">
+                                <label class="col-2 col-form-label">file logo</label>
+                                <div class="custom-file col-8">
+                                    <input type="file" class="custom-file-input" name="team_logo_form" id="team_logo_form"/>
+                                    <label class="custom-file-label" for="logo_team_form">Choose file</label>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="card-footer">
@@ -108,9 +118,9 @@
 </div>
 
 <script
-    src="https://code.jquery.com/jquery-2.2.4.js"
-    integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
-    crossorigin="anonymous">
+src="https://code.jquery.com/jquery-2.2.4.js"
+integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+crossorigin="anonymous">
 </script>
 <script>
     $(document).on('submit', '#form_group_team',function(e)
@@ -132,6 +142,9 @@
                 console.log(json.success);
                 $("#form_group_team")[0].reset();
                 $("#my_teams").load(" #my_teams");
+                
+                toast_page("team addded");
+
             },
             
             error : function(xhr,errmsg,err) {
@@ -139,7 +152,7 @@
             }
         });
     });
-
+    
     function delete_team(id_team, url)
     {
         Swal.fire({
@@ -165,23 +178,26 @@
                         $("#my_teams").load(" #my_teams");
                         $("#form_group_team")[0].reset();
                         Swal.fire(
-                            "Deleted!",
-                            "Your file has been deleted.",
-                            "success"
+                        "Deleted!",
+                        "Your file has been deleted.",
+                        "success"
                         );
+                        
+                    toast_page("team deleted");
+
                     },
                 });
             }
             else if (result.dismiss === "cancel") {
                 Swal.fire(
-                    "Cancelled",
-                    "Your imaginary file is safe :)",
-                    "error"
+                "Cancelled",
+                "Your imaginary file is safe :)",
+                "error"
                 )
             }
         });
     };
-
+    
     function show_data_team(id_team, url)
     {
         $.ajax({
@@ -196,23 +212,25 @@
                 $("#team_name_form").val(json.team_name);
                 $("#team_nationality_form").val(json.team_nationality);
                 $("#team_id_form").val(json.team_id);
-                $("#team_color_form").val(json.team_color.url);
-
+                $("#team_color_form").val(json.team_color);
+                
                 $("#modify_form_team").css('display', 'block');
                 $("#submit_form_team").css('display', 'none');
             }
         });
     };
-
+    
     $(document).ready(function(){
         $("#modify_form_team").click(function(){
             var url = '{% url "reglages_teams" %}';
-            var team_name = $("#team_name_form").val(),
-                team_nationality = $("#team_nationality_form").val();
-                team_color = $("#team_color_form").val();
-                team_id = $("#team_id_form").val();
-                // team_logo = $("#team_logo_form").val();
-
+            var team_name = $("#team_name_form").val();
+            var team_nationality = $("#team_nationality_form").val();
+            var team_color = $("#team_color_form").val();
+            var team_id = $("#team_id_form").val();
+            var team_logo = $("#team_logo_form").val();
+            
+            console.log(team_logo);
+            
             $.ajax({
                 headers : {"X-CSRFToken" : '{{csrf_token}}' }, 
                 url:url,
@@ -223,24 +241,42 @@
                     'team_nationality' : team_nationality,
                     'team_color': team_color,
                     'team_id': team_id,
-                    // 'team_logo': team_logo
+                    'team_logo': team_logo,
                 },
                 success : function(json){
                     $("#form_group_team")[0].reset();
                     $("#my_teams").load(" #my_teams");
-
-                    $("#modify_form_driver").css('display', 'none');
-                    $("#submit_form_driver").css('display', 'block');
+                    
+                    $("#modify_form_team").css('display', 'none');
+                    $("#submit_form_team").css('display', 'block');
+                    
+                    toast_page("team modified");
                 }
             });
         });
     });
-
-
-
-
-
-
+    
+    
+    
+    function toast_page(message)
+    {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            onOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+        Toast.fire({
+            type: 'success',
+            title: message
+        })
+    }
+    
+    
     $('#submit_form_team').mouseenter(function(event)
     {
         $(this).css('background-color', '#F22E52');
@@ -251,18 +287,18 @@
         $(this).css('background-color', '#F11E25');
         $(this).css('opacity', '0.80');
     });
-
+    
     $('#modify_form_team').mouseenter(function(event){
         $(this).css('opacity', '0.70');
     });
     $('#modify_form_team').mouseleave(function(event){
         $(this).css('opacity', '0.85');
     });
-
+    
     $('#cancel_form_team').click(function(){
         $("#form_group_team")[0].reset();
         $("#my_teams").load(" #my_teams");
-
+        
         $("#modify_form_team").css('display', 'none');
         $("#submit_form_team").css('display', 'block');
     });
