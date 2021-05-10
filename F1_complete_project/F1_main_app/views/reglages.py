@@ -22,7 +22,9 @@ def reglages_drivers(request):
 
         if request.POST.get('action') == 'update_driver':
                 return update_driver(request)
-        
+
+        if request.POST.get('action') == 'modal_driver':
+                return modal_driver(request)
 
         drivers = Driver.objects.all()
         teams = Team.objects.all()
@@ -110,6 +112,10 @@ def add_driver(request):
         response_data['success'] = 'ça passe'
         return JsonResponse(response_data)
 
+def modal_driver(request):
+        response_data = {}
+        response_data['success'] = 'modal'
+        return JsonResponse(response_data)
 
 
 
@@ -133,7 +139,9 @@ def reglages_teams(request):
 
 def add_team(request):
         response_data = {}
-        print(request.FILES.get('team_logo_form'))
+        print("############# test ###############")
+        print("FILES : ",request.FILES.get('team_logo_form'))
+
         name = request.POST.get('team_name_form')
         nationality= request.POST.get('team_nationality_form')
         color = request.POST.get('team_color_form')

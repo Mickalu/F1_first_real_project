@@ -37,13 +37,13 @@
                         {% for team in teams%}
                         <div class="form-group row" style="width: 130%;">
                             <div class="col-10" style="display: flex; justify-content: space-between;">
-                                <div style="display: flex; justify-content: flex-start;">
+                                <div style="display: flex; justify-content: flex-start; align-items: center;">
                                     {% if team.logo %}
-                                    <img src="{{team.logo.url}}" style="width: 50px; height: 50px;">
+                                        <img src="{{team.logo.url}}" width="80" >
                                     {% endif %}
-                                    <h2 style="cursor: pointer;" onclick="show_data_team(`{{team.id}}`, `{% url 'reglages_teams'%}`)" id='{{team.id}}'>{{team.nationality}} | {{team.name}}</h2>
+                                    <h2 style="cursor: pointer;" onclick="show_data_team(`{{team.id}}`, `{% url 'reglages_teams'%}`), '{{csrf_token}}'" id='{{team.id}}'>{{team.nationality}} | {{team.name}}</h2>
                                 </div>
-                                <button class="btn" class="delete_team_buttton" onclick="delete_team(`{{team.id}}`, `{% url 'reglages_teams'%}`)" id='{{team.id}}'>
+                                <button class="btn" class="delete_team_buttton" onclick="delete_team(`{{team.id}}`, `{% url 'reglages_teams'%}`), '{{csrf_token}}'" id='{{team.id}}'>
                                     <span class="svg-icon svg-icon-xl svg-icon-danger">
                                         <!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-03-183419/theme/html/demo2/dist/../src/media/svg/icons/Home/Trash.svg-->
                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -104,7 +104,7 @@
                                 </div>
                                 <div class="col-10 d-flex align-items-center">
                                     <button type="submit" name="submit_form" id="submit_form_team" class="btn mr-2" style="background-color: #F11E25; opacity: 0.85; ">Submit</button>
-                                    <button type="button" name="modify_form_team" id="modify_form_team" class="btn mr-2" style="background-color: #2EF2F2; opacity: 0.85; display: none;">Modify</button>
+                                    <button type="button" name="modify_form_team" id="modify_form_team" onclick="update_team(`{% url 'reglages_teams'%}`, '{{csrf_token}}')" class="btn mr-2" style="background-color: #2EF2F2; opacity: 0.85; display: none;">Modify</button>
                                     <button type="reset" class="btn btn-secondary" id="cancel_form_team">Cancel</button>
                                 </div>
                             </div>
@@ -122,185 +122,11 @@ src="https://code.jquery.com/jquery-2.2.4.js"
 integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
 crossorigin="anonymous">
 </script>
+
+<script src="{% static '/js/reglages/teams.js' %}"></script>
+
 <script>
-    $(document).on('submit', '#form_group_team',function(e)
-    {
-        var url = '{% url "reglages_teams" %}';
-        e.preventDefault();
-        
-        var form_data = new FormData($('#form_group_team').get(0));
-        form_data.append('action', 'add_team');
-        $.ajax({
-            headers : {"X-CSRFToken" : '{{csrf_token}}' }, 
-            url : url, 
-            method :'POST',
-            contentType : false,
-            processData : false,
-            data : form_data, 
-            
-            success : function(json) {
-                console.log(json.success);
-                $("#form_group_team")[0].reset();
-                $("#my_teams").load(" #my_teams");
-                
-                toast_page("team addded");
-
-            },
-            
-            error : function(xhr,errmsg,err) {
-                
-            }
-        });
-    });
-    
-    function delete_team(id_team, url)
-    {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, delete Driver!",
-            cancelButtonText: "No, cancel!",
-            reverseButtons: true
-        }).then(function(result){
-            if (result.value){
-                $.ajax({
-                    url:url,
-                    method:'POST',
-                    headers : {"X-CSRFToken" : '{{csrf_token}}'},
-                    data:{
-                        'id_team': id_team,
-                        'action': 'delete_team',
-                    },
-                    success : function(json) {
-                        console.log(json.success);
-                        $("#my_teams").load(" #my_teams");
-                        $("#form_group_team")[0].reset();
-                        Swal.fire(
-                        "Deleted!",
-                        "Your file has been deleted.",
-                        "success"
-                        );
-                        
-                    toast_page("team deleted");
-
-                    },
-                });
-            }
-            else if (result.dismiss === "cancel") {
-                Swal.fire(
-                "Cancelled",
-                "Your imaginary file is safe :)",
-                "error"
-                )
-            }
-        });
-    };
-    
-    function show_data_team(id_team, url)
-    {
-        $.ajax({
-            url:url,
-            method:'POST',
-            headers : {"X-CSRFToken" : '{{csrf_token}}' },
-            data:{
-                'action':'show_data_team',
-                'id_team':id_team
-            },
-            success: function(json){
-                $("#team_name_form").val(json.team_name);
-                $("#team_nationality_form").val(json.team_nationality);
-                $("#team_id_form").val(json.team_id);
-                $("#team_color_form").val(json.team_color);
-                
-                $("#modify_form_team").css('display', 'block');
-                $("#submit_form_team").css('display', 'none');
-            }
-        });
-    };
-    
-    $(document).ready(function(){
-        $("#modify_form_team").click(function(){
-            var url = '{% url "reglages_teams" %}';
-            var team_name = $("#team_name_form").val();
-            var team_nationality = $("#team_nationality_form").val();
-            var team_color = $("#team_color_form").val();
-            var team_id = $("#team_id_form").val();
-            var team_logo = $("#team_logo_form").val();
-            
-            console.log(team_logo);
-            
-            $.ajax({
-                headers : {"X-CSRFToken" : '{{csrf_token}}' }, 
-                url:url,
-                method:'POST',
-                data:{
-                    'action' : 'update_team',
-                    'team_name' : team_name,
-                    'team_nationality' : team_nationality,
-                    'team_color': team_color,
-                    'team_id': team_id,
-                    'team_logo': team_logo,
-                },
-                success : function(json){
-                    $("#form_group_team")[0].reset();
-                    $("#my_teams").load(" #my_teams");
-                    
-                    $("#modify_form_team").css('display', 'none');
-                    $("#submit_form_team").css('display', 'block');
-                    
-                    toast_page("team modified");
-                }
-            });
-        });
-    });
-    
-    
-    
-    function toast_page(message)
-    {
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 4000,
-            onOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-        })
-        Toast.fire({
-            type: 'success',
-            title: message
-        })
-    }
-    
-    
-    $('#submit_form_team').mouseenter(function(event)
-    {
-        $(this).css('background-color', '#F22E52');
-        $(this).css('opacity', '0.8');
-    });
-    $('#submit_form_team').mouseleave(function(event)
-    {
-        $(this).css('background-color', '#F11E25');
-        $(this).css('opacity', '0.80');
-    });
-    
-    $('#modify_form_team').mouseenter(function(event){
-        $(this).css('opacity', '0.70');
-    });
-    $('#modify_form_team').mouseleave(function(event){
-        $(this).css('opacity', '0.85');
-    });
-    
-    $('#cancel_form_team').click(function(){
-        $("#form_group_team")[0].reset();
-        $("#my_teams").load(" #my_teams");
-        
-        $("#modify_form_team").css('display', 'none');
-        $("#submit_form_team").css('display', 'block');
-    });
+    $(document).ready(add_team(`{% url 'reglages_teams'%}`));
 </script>
+
 {% endblock content %}
