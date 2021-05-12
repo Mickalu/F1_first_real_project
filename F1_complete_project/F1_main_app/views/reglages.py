@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from F1_main_app.models import Grand_Prix, Driver, Team
 from F1_main_app.forms.forms import Grand_Prix_form
+from django.contrib.auth.models import User
+
 from django.http import JsonResponse
 import datetime
 
@@ -36,8 +38,8 @@ def show_data_driver(request):
         id_driver = request.POST.get('id_driver')
         mon_driver = Driver.objects.get(id = int(id_driver))
 
-        response_data['driver_name'] = mon_driver.name
-        response_data['driver_last_name'] = mon_driver.last_name
+        response_data['driver_name'] = mon_driver.user.first_name
+        response_data['driver_last_name'] = mon_driver.user.last_name
         response_data['driver_nationality'] = mon_driver.nationality
         response_data['driver_age'] = mon_driver.age
         response_data['driver_date_of_birth'] = mon_driver.date_of_birth
@@ -76,13 +78,16 @@ def update_driver(request):
         
  
         Driver.objects.filter(pk=driver_id).update(
-                name = name,
                 nationality = nationality,
-                last_name = last_name,
                 age = int(age),
                 date_of_birth = date_of_birth,
                 number = int(number),
                 team = int(team_id),
+        )
+        User.objects.filter(id = Driver.objects.get(id = driver_id).user.id).update(
+                first_name = name,
+                last_name = last_name,
+                username = name[0]+" "+ last_name[0]
         )
 
         response_data['success'] = "it's updated"
@@ -100,10 +105,18 @@ def add_driver(request):
         number = request.POST.get('driver_number_form'),
         team_id = request.POST.get('driver_team_form'),
 
+
+        user_created = User.objects.create(
+            first_name= name[0],
+            last_name = last_name[0],
+            email='',
+            password='',
+            username= name[0]+" "+ last_name[0]
+        )
+
         Driver.objects.create(
-                name = name[0],
+                user = user_created,
                 nationality = nationality[0],
-                last_name = last_name[0],
                 age = int(age[0]),
                 date_of_birth = date_of_birth[0],
                 number = int(number[0]),
@@ -111,12 +124,6 @@ def add_driver(request):
         )
         response_data['success'] = 'ça passe'
         return JsonResponse(response_data)
-
-def modal_driver(request):
-        response_data = {}
-        response_data['success'] = 'modal'
-        return JsonResponse(response_data)
-
 
 
 def reglages_teams(request):

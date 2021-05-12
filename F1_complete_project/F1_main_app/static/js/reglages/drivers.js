@@ -1,30 +1,75 @@
-$(document).on('submit', '#form_group',function(e)
+function add_driver(url){
+    $(document).on('submit', '#form_group',function(e)
+    {
+        var url = url;
+        e.preventDefault();
+        
+        var form_data = new FormData($('#form_group').get(0));
+        form_data.append('action', 'add_driver');
+        $.ajax({
+            headers : {"X-CSRFToken" : '{{csrf_token}}' }, 
+            url : url, 
+            method :'POST',
+            contentType : false,
+            processData : false,
+            data : form_data, 
+            
+            success : function(json) {
+                console.log(json.success);
+                $("#form_group")[0].reset();
+                $("#my_drivers").load(" #my_drivers");
+                toast_page("driver added");
+            },
+            
+            error : function(xhr,errmsg,err) {
+                
+            }
+        });
+    });
+}
+
+
+
+function update_driver(url)
 {
-    var url = '{% url "reglages_drivers" %}';
-    e.preventDefault();
-    
-    var form_data = new FormData($('#form_group').get(0));
-    form_data.append('action', 'add_driver');
+    var url = url;
+    var driver_name = $("#driver_name_form").val(),
+        driver_last_name = $("#driver_last_name_form").val(),
+        driver_nationality = $("#driver_nationality_form").val(),
+        driver_age = $("#driver_age_form").val(),
+        driver_date_of_birth = $("#driver_date_of_birth_form").val(),
+        driver_number = $("#driver_number_form").val(),
+        driver_id = $("#driver_id_form").val(),
+        driver_team = $("#driver_team_form").val();
+
     $.ajax({
         headers : {"X-CSRFToken" : '{{csrf_token}}' }, 
         url : url, 
         method :'POST',
-        contentType : false,
-        processData : false,
-        data : form_data, 
-        
-        success : function(json) {
-            console.log(json.success);
+        data: {
+            'action':'update_driver',
+            'driver_name':driver_name, 
+            'driver_last_name':driver_last_name, 
+            'driver_nationality':driver_nationality,
+            'driver_age':driver_age,
+            'driver_date_of_birth':driver_date_of_birth,
+            'driver_number':driver_number,
+            'driver_team':driver_team,
+            'driver_id':driver_id,
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+        },
+        success: function(json){
             $("#form_group")[0].reset();
             $("#my_drivers").load(" #my_drivers");
-            toast_page("driver added");
-        },
-        
-        error : function(xhr,errmsg,err) {
-            
+
+            $("#modify_form_driver").css('display', 'none');
+            $("#submit_form_driver").css('display', 'block');
+            toast_page("driver modified");
+
         }
     });
-});
+}
+
 
 $(document).ready(function()
 {
@@ -163,6 +208,7 @@ $('#submit_form_driver').mouseenter(function(event)
     $(this).css('background-color', '#F22E52')
     $(this).css('opacity', '0.8')
 });
+
 $('#submit_form_driver').mouseleave(function(event)
 {
     $(this).css('background-color', '#F11E25')
@@ -172,6 +218,7 @@ $('#submit_form_driver').mouseleave(function(event)
 $('#modify_form_driver').mouseenter(function(event){
     $(this).css('opacity', '0.70')
 });
+
 $('#modify_form_driver').mouseleave(function(event){
     $(this).css('opacity', '0.85')
 });
@@ -183,4 +230,3 @@ $('#cancel_form_driver').click(function(){
     $("#modify_form_driver").css('display', 'none');
     $("#submit_form_driver").css('display', 'block');
 });
-

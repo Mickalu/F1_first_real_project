@@ -26,19 +26,21 @@ class Team(models.Model):
             img.save(self.logo.path)
 
 class Driver(models.Model):
-    name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
+    # User._meta.get_field('username')._unique = False
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     nationality = models.CharField(max_length=200)
     age = models.PositiveIntegerField()
     date_of_birth = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
     number = models.PositiveIntegerField()
     team = models.ForeignKey('team',default=None, on_delete = models.SET_NULL,blank=True, null=True) # when team is deleted, driver not
 
+    
     class Meta:
         verbose_name = "driver"
 
     def __str__(self):
-        return self.last_name
+        return f'{self.user.last_name}'
 
 class Grand_Prix(models.Model):
     name = models.CharField(max_length=200)

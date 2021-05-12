@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+{% if messages %}
+{% for message in messages %}
+{{message}}
+{% endfor %}
+{% endif %}
+<link href="{% static '/css/pages/drivers.css' %}" rel="stylesheet" type="text/css">
+
+
+<div class="subheader py-2 py-lg-12 subheader-transparent" id="kt_subheader">
+    <div class="container">
+        
+        <!--begin::Toolbar-->
+        <div class="d-flex" style="display: flex; justify-content: flex-end;">
+            <!--begin::Dropdown-->
+            <div style="margin-right: 2%;">
+                <button  onclick="modal_driver(`{% url 'page_drivers'%}`)" type="button"  class="btn" id="modal_driver_button" class="btn" style="background: -webkit-linear-gradient(to right, #f5af19, #f12711); background: linear-gradient(to right, #f5af19, #f12711);
+                color: black; border-radius: 8px; background-repeat: no-repeat;">
+                    Add driver
+                </button>  
+            </div>
+            <div class="dropdown dropdown-inline ml-2">
+                <input type="button" class="btn btn-white font-weight-bold py-3 px-6" value="Back" onclick="history.back()">
+            </div>
+ 
+            <!--end::Dropdown-->
+        </div>
+        <!--end::Toolbar-->
+    </div>
+</div>
+
+
+{% include 'pages/modal/modal_driver.html' %}
+{% csrf_token %}
+<div class="d-flex flex-column-fluid">
+    <div class="container">
+
+        <div id="kt_datatable_wrapper" class="dataTables_wrapper dt-bootstrap4 mt-4 mb-4" style="background-color: white;">
+            <div class="row" style="margin-top: 2%; display: flex; justify-content: center;">
+                <div class="col-sm-12 card card-custom" style="padding: 3%; border-radius: 8px;">
+                    <table class="table table-separate table-head-custom table-checkable dataTable no-footer dtr-inline" id="kt_table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <label class="checkbox ml-2" for="select_all1">
+                                    <input type="checkbox" id="select_all1">
+                                    <span></span>
+                                </label>
+                            </th>
+                            <th><span class="th">Number</span></th>
+                            <th><span class="th">Name</span></th>
+                            <th><span class="th">Last_Name</span></th>
+                            <th><span class="th">Nationality</span></th>
+                            <th><span class="th">Birthday</span></th>
+                            <th><span class="th">Age</span></th>
+                            <th><span class="th">Team</span></th>
+                            <th><span class="th">Actions</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyid"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script
+src="https://code.jquery.com/jquery-2.2.4.js"
+integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+crossorigin="anonymous">
+</script>
+
+<script src="{% static '/js/page_drivers/page_drivers.js' %}"></script>
+<script src="{% static '/js/page_drivers/ajax_drivers.js' %}"></script>
+
+<script>
+    $(document).ready(function(){
+        add_driver(`{% url 'page_drivers'%}`);
+        init_table_driver(`{{csrf_token}}`, `{% url 'ajax_drivers'%}`, `{% url 'page_drivers'%}`);
+    });
+</script>
+
+{% endblock content %}

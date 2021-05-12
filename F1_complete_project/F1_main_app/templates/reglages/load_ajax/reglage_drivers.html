@@ -14,12 +14,7 @@
         <!--begin::Toolbar-->
         <div class="d-flex" style="display: flex ! important; justify-content: flex-end ! important;">
             <!--begin::Dropdown-->
-            <div style="margin-right: 2%;">
-                <button  onclick="modal_driver(`{% url 'reglages_drivers'%}`)" type="button"  class="btn" id="modal_driver_button" class="btn" style="background: -webkit-linear-gradient(to right, #f5af19, #f12711); background: linear-gradient(to right, #f5af19, #f12711);
-                color: black; border-radius: 8px; background-repeat: no-repeat;">
-                    Launch demo modal
-                </button>  
-            </div>
+
             <div class="dropdown dropdown-inline ml-2">
                 <input type="button" class="btn btn-white font-weight-bold py-3 px-6" value="Back" onclick="history.back()">
             </div>
@@ -31,7 +26,6 @@
 </div>
 
 
-{% include 'reglages/load_ajax/modal/modal_driver.html' %}
 
 <div class="d-flex flex-column-fluid">
     <div class="container">
@@ -47,7 +41,7 @@
                         {% for driver in drivers%}
                         <div class="form-group row" style="width: 130%;">
                             <div class="col-10" style="display: flex; justify-content: space-between; align-items: center;">
-                                <h2 style="cursor: pointer;" onclick="show_data_driver(`{{driver.id}}`, `{% url 'reglages_drivers'%}`)" id='{{driver.id}}'>{{driver.number}} | {{driver.team.name}} | {{driver.name}} {{driver.last_name}} </h2>
+                                <h2 style="cursor: pointer;" onclick="show_data_driver(`{{driver.id}}`, `{% url 'reglages_drivers'%}`)" id='{{driver.id}}'>{{driver.number}} | {{driver.team.name}} | {{driver.user.first_name}} {{driver.user.last_name}} </h2>
                                 <button class="btn" class="delete_driver_buttton" onclick="delete_driver(`{{driver.id}}`, `{% url 'reglages_drivers'%}`)" id='{{driver.id}}'>
                                     <span class="svg-icon svg-icon-xl svg-icon-danger">
                                         <!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-03-183419/theme/html/demo2/dist/../src/media/svg/icons/Home/Trash.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -138,14 +132,15 @@
             </div>
             
         </div>
+
     </div>
 </div>
 
-<!-- <script
+<script
 src="https://code.jquery.com/jquery-2.2.4.js"
 integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
 crossorigin="anonymous">
-</script> -->
+</script>
 
 <script src="{% static '/js/reglages/drivers.js' %}"></script>
 <script>

@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.urls import path
 from F1_main_app.views.base import *
 from F1_main_app.views.reglages import *
+from F1_main_app.views.drivers import *
+
+
 
 urlpatterns = [
     path('', index, name="index"),
@@ -9,6 +12,8 @@ urlpatterns = [
     path('reglages/drivers', reglages_drivers, name="reglages_drivers"),
     path('reglages/teams', reglages_teams, name="reglages_teams"),
     path('reglages/grand_prixs', reglages_grandprixs, name="reglages_grandprixs"),
+    path('pages/drivers', page_drivers, name="page_drivers"),
+    path('pages/ajax_drivers', ajax_drivers, name="ajax_drivers"),
 ]
 
 from django.conf import settings

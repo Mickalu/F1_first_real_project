@@ -1,0 +1,8 @@
+#submit_form_driver:hover{
+    background-color: #F22E52; 
+    opacity: 0.80; 
+}
+
+cancel_form_driver:hover{
+    opacity: 0.70;
+}
