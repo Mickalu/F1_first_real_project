@@ -1,0 +1,63 @@
+{% load static %}
+
+<style>
+    #submit_form_driver{
+        background-color: #F11E25; 
+        opacity: 0.85;
+    }
+    #submit_form_driver:hover{
+        background-color: '#DE422F';
+        opacity: 0.80;
+    }
+    #cancel_form_driver:hover{
+        opacity: 0.70;
+    }
+</style>
+<div class="modal fade " id="modal_driver" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add achivement</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body">
+                    <form id="form_group">
+                        {% csrf_token %}
+                        <input type="hidden" id="driver_id_form">
+                        <div class="form-group row">
+                            <div class="col-10">
+                                <input class="form-control" type="text" name="achivement_driver_name" id="achivement_driver_name" value="{{name}}" placeholder="name"/>
+                            </div>
+                        </div>
+                        <div class=" col-10 form-group">
+                            <label>Team</label>
+                            <select class="form-control form-control-solid" id="driver_team_form" name="driver_team_form">
+                                {% for gp in gps %}
+                                <option  value='{{gp.id}}'>{{gp.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-10">
+                                <input class="form-control" type="text" name="achivement_driver_standing" id="achivement_driver_standing" placeholder="standing"/>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-2">
+                                </div>
+                                <div class="col-10 d-flex align-items-center">
+                                    <button type="submit" name="submit_form" id="submit_form_achivement" class="btn mr-2">Submit</button>
+                                    <button type="reset" class="btn btn-secondary" id="cancel_form_achivement">Cancel</button>
+                                </div>
+                            </div>
+                        </div>   
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

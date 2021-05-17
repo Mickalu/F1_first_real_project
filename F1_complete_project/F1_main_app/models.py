@@ -55,3 +55,14 @@ class Grand_Prix(models.Model):
 
     def __str__(self):
         return self.name
+
+class Achivement(models.Model):
+    gp = models.ForeignKey('Grand_Prix', default=None, on_delete=models.SET_NULL, blank=True, null = True)
+    standing = models.PositiveIntegerField()
+    driver = models.ForeignKey('driver', default=None, on_delete = models.SET_NULL,blank=True, null=True)
+
+    class Meta:
+        verbose_name = "achivement"
+
+    def __str__(self):
+        return f'{self.driver.user.last_name} {self.gp.name}'

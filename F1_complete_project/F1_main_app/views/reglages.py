@@ -87,7 +87,6 @@ def update_driver(request):
         User.objects.filter(id = Driver.objects.get(id = driver_id).user.id).update(
                 first_name = name,
                 last_name = last_name,
-                username = name[0]+" "+ last_name[0]
         )
 
         response_data['success'] = "it's updated"

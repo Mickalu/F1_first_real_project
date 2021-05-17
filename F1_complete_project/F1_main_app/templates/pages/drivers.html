@@ -18,8 +18,8 @@
         <div class="d-flex" style="display: flex; justify-content: flex-end;">
             <!--begin::Dropdown-->
             <div style="margin-right: 2%;">
-                <button  onclick="modal_driver(`{% url 'page_drivers'%}`)" type="button"  class="btn" id="modal_driver_button" class="btn" style="background: -webkit-linear-gradient(to right, #f5af19, #f12711); background: linear-gradient(to right, #f5af19, #f12711);
-                color: black; border-radius: 8px; background-repeat: no-repeat;">
+                <button  onclick="modal_add_driver(`{% url 'page_drivers'%}`)" type="button"  class="btn" id="modal_driver_button" class="btn" style="background: -webkit-linear-gradient(to right, #f5af19, #f12711); background: linear-gradient(to right, #f5af19, #f12711);
+                color: white; border-radius: 8px; background-repeat: no-repeat;">
                     Add driver
                 </button>  
             </div>
@@ -35,6 +35,8 @@
 
 
 {% include 'pages/modal/modal_driver.html' %}
+{% include 'pages/modal/modal_add_achivement.html' %}
+
 {% csrf_token %}
 <div class="d-flex flex-column-fluid">
     <div class="container">
