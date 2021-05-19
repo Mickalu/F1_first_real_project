@@ -71,10 +71,11 @@
                                 <div class="form-group row" id="kt_repeater_1">
                                     <label > Achievement : </label>
                                     <div data-repeater-list="" id="achivement_repeater_list" class="col-lg-10">
-                                        <div data-repeater-item id="achivement_repeater_data" class="form-group row align-items-center">
+                                        <div data-repeater-item id="achivement_repeater_data" class="form-group row align-items-center" style="display: none;">
+                                            <!-- <input type="hidden" id="achivement_id"> -->
                                             <div class="col-6">
                                                 <label> Grand Prix</label>
-                                                <select class="form-control form-control-solid" id="gp_name_achievement" name="gp_name_achievement">
+                                                <select class="form-control form-control-solid" name="gp_name_achievement">
                                                     {% for gp in gps %}
                                                         <option  value='{{gp.id}}'>{{gp.name}}</option>
                                                     {% endfor %}
@@ -84,22 +85,20 @@
                                                 <label>Standing</label>
                                                 <input class="form-control" type="number" name="gp_standing_achivement"  value="{{number}}"/>
                                             </div>
-                                            <div class="col-2">
+                                            <div class="col-1">
                                                 <label></label>
                                                 <a href="javascript:;" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger">
                                                     <i class="la la-trash-o"></i>Delete
                                                 </a>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <label class="col-lg-2 col-form-label text-right"></label>
-                                    <div class="col-lg-4">
-                                        <a href="javascript:;" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
-                                            <i class="la la-plus"></i>Add
-                                        </a>
-                                    </div>
+                                <div class="form-group row">
+                                    <a href="javascript:;" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
+                                        <i class="la la-plus"></i>Add
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -109,7 +108,7 @@
                                 </div>
                                 <div class="col-10 d-flex align-items-center">
                                     <button type="submit" name="submit_form" id="submit_form_driver" class="btn mr-2">Submit</button>
-                                    <button type="button" name="modify_form_driver" id="modify_form_driver" onclick="update_driver( `{% url 'page_drivers'%}`)" class="btn mr-2" style="background-color: #2EF2F2; opacity: 0.85; display: none;">Modify</button>
+                                    <button type="button" name="modify_form_driver" id="modify_form_driver" onclick="update_driver(`{% url 'page_drivers'%}`)" class="btn mr-2" style="background-color: #2EF2F2; opacity: 0.85; display: none;">Modify</button>
                                     <button type="reset" class="btn btn-secondary" id="cancel_form_driver">Cancel</button>
                                 </div>
                             </div>

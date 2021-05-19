@@ -10,9 +10,11 @@ function modal_add_driver(url)
         },
         success : function(json)
         {
-
             $("#form_group").trigger("reset");
             $("#modal_driver").modal("show");
+
+            $("#achivement_repeater_list").empty();
+            
 
             $("#modify_form_driver").css('display', 'none');
             $("#submit_form_driver").css('display', 'block');
@@ -22,9 +24,8 @@ function modal_add_driver(url)
 
 function modal_drivers(url, id_driver)
 {
-    console.log(url);
-    console.log(id_driver);
-    $.ajax({
+    $.ajax(
+    {
         url : url,
         method : 'POST',
         data : {
@@ -34,6 +35,56 @@ function modal_drivers(url, id_driver)
         },
         success : function(json)
         {
+            var compt = 0;
+            var size = Object.keys(json.achivement_driver).length;
+            var size_gps = Object.keys(json.gps).length;
+            var id_select = "select_gp_name_achievement";
+            $("#achivement_repeater_list").empty();
+
+            while (compt < size)
+            {
+                var compt_gp = 0;
+                var position = String(compt);
+
+                var gp_achivement =  json.achivement_driver[compt];
+                var option_select = "";
+
+                for (var i = json.gps.length - 1; i >= 0; i--)
+                {
+                    option_select += "<option  value='"+ json.gps[i][0] +"'>"+ json.gps[i][1] +"</option>";
+                };
+                
+                input_id_achivement = `<input type="hidden" id="achivement_id`+ position +`">`;
+
+                $("#achivement_repeater_list").prepend(`
+                    <div data-repeater-item id="achivement_repeater_data" name="achivement_repeater_data" class="form-group row align-items-center">
+                        `+ input_id_achivement +`
+                        <div class="col-6">
+                            <label> Grand Prix</label>
+                            <select class="form-control form-control-solid" id="`+ id_select +position+`" name="select_gp_name_achievement`+ position +`">
+                            `+ option_select +`
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label>Standing</label>
+                            <input class="form-control" type="number" id="gp_standing_achivement`+ position+`" name="gp_standing_achivement`+ position +`"  value="`+ gp_achivement.standing +`"/>
+                        </div>
+                        <div class="col-1">
+                            <label></label>
+                            <a href="javascript:;" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger">
+                                <i class="la la-trash-o"></i>Delete
+                            </a>
+                        </div>
+                    </div>
+                `);
+
+                $("#achivement_id"+ position).val(gp_achivement.id);
+                $("#"+id_select).val(gp_achivement.gp_id);
+                compt =compt + 1; 
+            };
+
+
+            
             $("#driver_name_form").val(json.name);
             $("#driver_last_name_form").val(json.last_name);
             $("#driver_nationality_form").val(json.nationality);
@@ -49,20 +100,14 @@ function modal_drivers(url, id_driver)
             $("#modal_driver").modal("show");
         }
     });
-}
+};
+
 
 function add_driver(url){
     $(document).on('submit', '#form_group',function(e)
     {
-        var rep = document.getElementById('achivement_repeater_list');
-        var number_of_achivement = (rep.childNodes.length) - 2;
-
-
-
-
-        console.log($('#form_group').get(0))
-
-
+        var rep = document.getElementById('achivement_repeater_data');
+        var number_of_achivement = (rep.childNodes.length) - 4;
         var url = url;
         e.preventDefault();
 
@@ -101,9 +146,30 @@ function update_driver(url)
     var driver_id = $("#driver_id_form").val();
     var team = $("#driver_team_form").val();
 
-    console.log($("#driver_number_form").val());
+    var number_of_form_repeater = $("#achivement_repeater_list").children().length;
+    var list_form_repeater_data = [];
+    
+    console.log("Children de repeater list : " + $("#achivement_repeater_list").children());
+    console.log("number of form created : "+ number_of_form_repeater);
 
+    for (var i = 0; i < number_of_form_repeater; i++)
+    {
+        console.log("la valeur de i pour faire les tableaux des forms : "+i);
 
+        var id_achivement = $("#achivement_id"+ String(i)).val();
+        var id_gp_achivement = $("#select_gp_name_achievement"+String(i)).val();
+        var standing_driver_achivement = $("#gp_standing_achivement"+String(i)).val();
+
+        console.log("valeur de L'id du gp : "+id_gp_achivement+" valeur du standing : "+standing_driver_achivement);
+
+        if(id_gp_achivement != null & standing_driver_achivement != null )
+        {
+            list_form_repeater_data.push([parseInt(id_achivement) , parseInt(id_gp_achivement), parseInt(standing_driver_achivement)]);
+        }
+    };
+
+    console.log("La liste des formes que ajaax envoie : "+list_form_repeater_data);
+    
     $.ajax({
         url : url, 
         method :'POST',
@@ -117,11 +183,15 @@ function update_driver(url)
             'number':number,
             'team':team,
             'driver_id':driver_id,
-            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            'list_archivement[]' : list_form_repeater_data,
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
         },
         success: function(json){
             $('#modal_driver').modal('hide');
             $('#kt_table').DataTable().ajax.reload(null, false);
+
+            $("#achivement_repeater_list").empty();
+
 
             $("#modify_form_driver").css('display', 'none');
             $("#submit_form_driver").css('display', 'block');
@@ -157,7 +227,7 @@ function delete_driver(id_driver, url)
                     $('#kt_table').DataTable().ajax.reload(null, false);
                     Swal.fire(
                         "Deleted!",
-                        "Your file has been deleted.",
+                        "Your driver has been deleted.",
                         "success"
                     );
                 },
@@ -166,7 +236,7 @@ function delete_driver(id_driver, url)
         else if (result.dismiss === "cancel") {
             Swal.fire(
                 "Cancelled",
-                "Your imaginary file is safe :)",
+                "Your idriver is safe :)",
                 "error"
             )
         }
@@ -198,9 +268,6 @@ function init_table_driver(token, url, url_delete)
 
 function load_table_driver(token, url, url_delete)
 {
-    console.log("dans js");
-    console.log("url delete : " + url_delete);
-    console.log("url : " + url);
     var table = $('#kt_table').DataTable
     (
         {
@@ -327,12 +394,13 @@ function load_table_driver(token, url, url_delete)
                             </button>`);
 
                         icone_modify = (`<button class="btn" onclick="modal_drivers('`+ url_delete +`','`+ driver_id +`')" >
-                            <span class="svg-icon svg-icon-success svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-06-223557/theme/html/demo2/dist/../src/media/svg/icons/General/Update.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <rect x="0" y="0" width="24" height="24"/>
-                                <path d="M8.43296491,7.17429118 L9.40782327,7.85689436 C9.49616631,7.91875282 9.56214077,8.00751728 9.5959027,8.10994332 C9.68235021,8.37220548 9.53982427,8.65489052 9.27756211,8.74133803 L5.89079566,9.85769242 C5.84469033,9.87288977 5.79661753,9.8812917 5.74809064,9.88263369 C5.4720538,9.8902674 5.24209339,9.67268366 5.23445968,9.39664682 L5.13610134,5.83998177 C5.13313425,5.73269078 5.16477113,5.62729274 5.22633424,5.53937151 C5.384723,5.31316892 5.69649589,5.25819495 5.92269848,5.4165837 L6.72910242,5.98123382 C8.16546398,4.72182424 10.0239806,4 12,4 C16.418278,4 20,7.581722 20,12 C20,16.418278 16.418278,20 12,20 C7.581722,20 4,16.418278 4,12 L6,12 C6,15.3137085 8.6862915,18 12,18 C15.3137085,18 18,15.3137085 18,12 C18,8.6862915 15.3137085,6 12,6 C10.6885336,6 9.44767246,6.42282109 8.43296491,7.17429118 Z" fill="#000000" fill-rule="nonzero"/>
-                            </g>
-                        </svg><!--end::Svg Icon--></span>
+                        <span class="svg-icon svg-icon-success svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/General/Visible.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <rect x="0" y="0" width="24" height="24"/>
+                            <path d="M3,12 C3,12 5.45454545,6 12,6 C16.9090909,6 21,12 21,12 C21,12 16.9090909,18 12,18 C5.45454545,18 3,12 3,12 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"/>
+                            <path d="M12,15 C10.3431458,15 9,13.6568542 9,12 C9,10.3431458 10.3431458,9 12,9 C13.6568542,9 15,10.3431458 15,12 C15,13.6568542 13.6568542,15 12,15 Z" fill="#000000" opacity="0.3"/>
+                        </g>
+                    </svg><!--end::Svg Icon--></span>
                         </button>`);
 
                         return icone_delete + icone_modify;
@@ -350,14 +418,13 @@ var KTFormRepeater = function() {
     var demo1 = function() {
         $('#kt_repeater_1').repeater({
             initEmpty: false,
-
             defaultValues: {
                 'text-input': 'foo',
-                'name' : 'gp_standing_achivement_',
             },
 
             show: function () {
                 $(this).slideDown();
+
             },
 
             hide: function (deleteElement) {
@@ -381,6 +448,9 @@ jQuery(document).ready(function() {
 $('#cancel_form_driver').click(function(){
     $("#form_group")[0].reset();
     $("#my_drivers").load(" #my_drivers");
+
+    $("#achivement_repeater_list").empty();
+
 
     $('#modal_driver').modal('hide');
     $("#modify_form_driver").css('display', 'none');

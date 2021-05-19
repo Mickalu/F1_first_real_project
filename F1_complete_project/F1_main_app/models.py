@@ -59,10 +59,14 @@ class Grand_Prix(models.Model):
 class Achivement(models.Model):
     gp = models.ForeignKey('Grand_Prix', default=None, on_delete=models.SET_NULL, blank=True, null = True)
     standing = models.PositiveIntegerField()
-    driver = models.ForeignKey('driver', default=None, on_delete = models.SET_NULL,blank=True, null=True)
+    driver = models.ForeignKey('driver', default=None, on_delete = models.SET_NULL, blank=True, null=True)
 
     class Meta:
         verbose_name = "achivement"
 
     def __str__(self):
-        return f'{self.driver.user.last_name} {self.gp.name}'
+        if self.driver.user:
+            print(self.driver.user.last_name)
+            return f'{self.gp.name} {self.gp.id} {self.driver.user.last_name}'
+        else:
+            return f'{self.gp.name}'
