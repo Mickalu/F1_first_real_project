@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link href="{% static '/css/pages/drivers.css' %}" rel="stylesheet" type="text/css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js" integrity="sha512-FHa4dxvEkSR0LOFH/iFH0iSqlYHf/iTwLc5Ws/1Su1W90X0qnxFxciJimoue/zyOA/+Qz/XQmmKqjbubAAzpkA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css" integrity="sha512-jO9KUHlvIF4MH/OTiio0aaueQrD38zlvFde9JoEA+AQaCNxIJoX4Kjse3sO2kqly84wc6aCtdm9BIUpYdvFYoA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js" integrity="sha512-1bpfZkKJ+WlmJN/I2KLm79dSiuOos0ymwL5IovsUVARyzcaf9rSXsVO2Cdg4qlKNOQXh8fd1d0vKeY9Ru3bQDw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css" integrity="sha512-NCJ1O5tCMq4DK670CblvRiob3bb5PAxJ7MALAz2cV40T9RgNMrJSAwJKy0oz20Wu7TDn9Z2WnveirOeHmpaIlA==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+    
+    {% csrf_token %}
+    <div class="d-flex flex-column-fluid" style="margin-top: 3%;">
+        <div class="container">
+            <input  type="file" id="file-to-upload" accept="application/pdf" />
+            
+            <div id="pdf-main-container">
+                <div id="pdf-contents">
+                    <div id="pdf-meta">
+                    </div>
+                    <div id="canvas_container">
+                        <canvas id="pdf-canvas"></canvas>
+                    </div>
+                    
+                </div>
+            </div>
+        
+            <div class="row" id="row_cropper" style="display: none; margin-top: 2%;">
+                <div id="cropper" class="col-9" style="width:100%" style="margin-right: 3;">
+                
+                </div>
+
+                <div id="cropper-data" class="col-2" style="margin-left: 3%;">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="dataX">X</label>
+                            </div>
+                            <input type="text" class="form-control" id="dataX" placeholder="x">
+                            <div class="input-group-append">
+                                <span class="input-group-text">px</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="dataY">Y</label>
+                            </div>
+                            <input type="text" class="form-control" id="dataY" placeholder="y">
+                            <div class="input-group-append">
+                                <span class="input-group-text">px</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+
+        </div>
+        
+        <script
+        src="https://code.jquery.com/jquery-2.2.4.js"
+        integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+        crossorigin="anonymous">
+    </script>
+    <script src="{% static '/js/module_image/module_image.js' %}"></script>
+    <script src="{% static '/js/module_image/pdf.js' %}"></script>
+    <script src="{% static '/js/module_image/pdf.worker.js' %}"></script>
+    <!-- <script src="{% static '/js/module_image/cropper.js' %}"></script> -->
+    
+    
+    
+    {% endblock content %}
+    

@@ -102,10 +102,7 @@ def update_driver(request):
         driver_id = request.POST.get('driver_id')
         list_archivement = request.POST.getlist('list_archivement[]')
 
-        print("Ce que l'on reçoit des formes : ",list_archivement)
-        for i in list_archivement:
-                list_archivement_int.append(list(map(int, i.split(','))))
-                print("donnée des forms que l'on va modifier : ",list_archivement_int)
+
 
         driver_updated = Driver.objects.filter(pk=driver_id).update(
         nationality = nationality,
@@ -118,6 +115,21 @@ def update_driver(request):
                 first_name = name,
                 last_name = last_name,
         )
+
+        print("Ce que l'on reçoit des formes : ",list_archivement)
+        
+        for i in list_archivement:
+                print("premiere : ",i)
+                
+                if i[0] == '':
+                        i = i[0]
+                        print(i)
+
+                print("deuxieme : ",i)
+
+
+                list_archivement_int.append(list(map(int, i.split(','))))
+                print("donnée des forms que l'on va modifier : ",list_archivement_int)
 
         for elem in list_archivement_int:
                 print("id_achivement : ",elem[1])

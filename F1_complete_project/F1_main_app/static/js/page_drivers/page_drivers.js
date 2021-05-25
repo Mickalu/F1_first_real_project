@@ -54,20 +54,20 @@ function modal_drivers(url, id_driver)
                     option_select += "<option  value='"+ json.gps[i][0] +"'>"+ json.gps[i][1] +"</option>";
                 };
                 
-                input_id_achivement = `<input type="hidden" id="achivement_id`+ position +`">`;
+                input_id_achivement = `<input type="hidden" id="achivement_id`+ position +`" class="achivement_id">`;
 
                 $("#achivement_repeater_list").prepend(`
-                    <div data-repeater-item id="achivement_repeater_data" name="achivement_repeater_data" class="form-group row align-items-center">
+                    <div data-repeater-item id="achivement_repeater_data" name="achivement_repeater_data" class="form-group row align-items-center achivement_repeater_data">
                         `+ input_id_achivement +`
                         <div class="col-6">
                             <label> Grand Prix</label>
-                            <select class="form-control form-control-solid" id="`+ id_select +position+`" name="select_gp_name_achievement`+ position +`">
+                            <select class="form-control form-control-solid repeater_value" id="`+ id_select +position+`" name="select_gp_name_achievement`+ position +`">
                             `+ option_select +`
                             </select>
                         </div>
                         <div class="col-4">
                             <label>Standing</label>
-                            <input class="form-control" type="number" id="gp_standing_achivement`+ position+`" name="gp_standing_achivement`+ position +`"  value="`+ gp_achivement.standing +`"/>
+                            <input class="form-control standing_repeater_value" type="number" id="gp_standing_achivement`+ position+`" name="gp_standing_achivement`+ position +`"  value="`+ gp_achivement.standing +`"/>
                         </div>
                         <div class="col-1">
                             <label></label>
@@ -148,27 +148,17 @@ function update_driver(url)
 
     var number_of_form_repeater = $("#achivement_repeater_list").children().length;
     var list_form_repeater_data = [];
-    
-    console.log("Children de repeater list : " + $("#achivement_repeater_list").children());
-    console.log("number of form created : "+ number_of_form_repeater);
 
-    for (var i = 0; i < number_of_form_repeater; i++)
+    var achivement_id_from_input = $("div.achivement_repeater_data").find("input.achivement_id");
+    var standing_from_input = $("div.achivement_repeater_data").find("input.standing_repeater_value");
+    var select_gp = $("div.achivement_repeater_data").find("select.repeater_value");
+
+
+    for (var i = 0; i < achivement_id_from_input.length; i++)
     {
-        console.log("la valeur de i pour faire les tableaux des forms : "+i);
 
-        var id_achivement = $("#achivement_id"+ String(i)).val();
-        var id_gp_achivement = $("#select_gp_name_achievement"+String(i)).val();
-        var standing_driver_achivement = $("#gp_standing_achivement"+String(i)).val();
-
-        console.log("valeur de L'id du gp : "+id_gp_achivement+" valeur du standing : "+standing_driver_achivement);
-
-        if(id_gp_achivement != null & standing_driver_achivement != null )
-        {
-            list_form_repeater_data.push([parseInt(id_achivement) , parseInt(id_gp_achivement), parseInt(standing_driver_achivement)]);
-        }
-    };
-
-    console.log("La liste des formes que ajaax envoie : "+list_form_repeater_data);
+        list_form_repeater_data.push([achivement_id_from_input[i].value, standing_from_input[i].value, select_gp[i].value]);
+    }
     
     $.ajax({
         url : url, 

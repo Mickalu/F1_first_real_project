@@ -71,11 +71,11 @@
                                 <div class="form-group row" id="kt_repeater_1">
                                     <label > Achievement : </label>
                                     <div data-repeater-list="" id="achivement_repeater_list" class="col-lg-10">
-                                        <div data-repeater-item id="achivement_repeater_data" class="form-group row align-items-center" style="display: none;">
-                                            <!-- <input type="hidden" id="achivement_id"> -->
+                                        <div data-repeater-item id="achivement_repeater_data" class="form-group row align-items-center achivement_repeater_data" style="display: none;">
+                                            <input type="hidden" id="achivement_id" class="achivement_id">
                                             <div class="col-6">
                                                 <label> Grand Prix</label>
-                                                <select class="form-control form-control-solid" name="gp_name_achievement">
+                                                <select class="form-control form-control-solid repeater_value" id="select_gp_name_achievement" name="gp_name_achievement">
                                                     {% for gp in gps %}
                                                         <option  value='{{gp.id}}'>{{gp.name}}</option>
                                                     {% endfor %}
@@ -83,7 +83,7 @@
                                             </div>
                                             <div class="col-4">
                                                 <label>Standing</label>
-                                                <input class="form-control" type="number" name="gp_standing_achivement"  value="{{number}}"/>
+                                                <input class="form-control standing_repeater_value" type="number" name="gp_standing_achivement"  value="{{number}}"/>
                                             </div>
                                             <div class="col-1">
                                                 <label></label>

@@ -3,6 +3,8 @@ from django.urls import path
 from F1_main_app.views.base import *
 from F1_main_app.views.reglages import *
 from F1_main_app.views.drivers import *
+from F1_main_app.views.module_image import *
+
 
 
 
@@ -14,6 +16,8 @@ urlpatterns = [
     path('reglages/grand_prixs', reglages_grandprixs, name="reglages_grandprixs"),
     path('pages/drivers', page_drivers, name="page_drivers"),
     path('pages/ajax_drivers', ajax_drivers, name="ajax_drivers"),
+    path('pages/module_image', module_image, name="module_image"),
+
 ]
 
 from django.conf import settings
