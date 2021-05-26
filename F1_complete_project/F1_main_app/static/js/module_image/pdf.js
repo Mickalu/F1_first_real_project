@@ -15,6 +15,7 @@
 /* jshint globalstrict: false */
 /* umdutils ignore */
 
+
 (function (root, factory) {
   'use strict';
   if (typeof define === 'function' && define.amd) {
@@ -9275,6 +9276,7 @@ var PDFPageProxy = (function PDFPageProxyClosure() {
       if (arguments.length < 2) {
         rotate = this.rotate;
       }
+      
       return new PageViewport(this.view, scale, rotate, 0, 0);
     },
     /**
